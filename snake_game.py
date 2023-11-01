@@ -25,6 +25,20 @@ change_to = 'RIGHT'
 #positioning the snake_food
 food_position = [random.randrange(1, 50) * 10,
                 random.randrange(1, 50) * 10]
+def show_score(choice, color):
+
+     
+    # create the display surface object 
+    # score_surface
+    score_surface = my_font.render('Score : ' + str(score), True, color)
+     
+    # create a rectangular object for the text
+    # surface object
+    score_rect = score_surface.get_rect()
+     
+    # displaying text
+    game_window.blit(score_surface, score_rect)
+ 
 # method to check for collision
 def check_collision():
     if (snake_position[0] < 0 or snake_position[0] > width) or (snake_position[1] < 0 or snake_position[1] > height):
@@ -52,41 +66,42 @@ while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             exit()
-        if event.type == KEYDOWN:
-            if event.key == K_UP:
+        elif event.type == KEYDOWN:
+            if event.key == K_UP and change_to != 'DOWN':
                 change_to = 'UP'
-            if event.key == K_DOWN:
+            elif event.key == K_DOWN and change_to != 'UP':
                 change_to = 'DOWN'
-            if event.key == K_LEFT:
+            elif event.key == K_LEFT and change_to != 'RIGHT':
                 change_to = 'LEFT'
-            if event.key == K_RIGHT:
+            elif event.key == K_RIGHT and change_to != 'LEFT':
                 change_to = 'RIGHT'
     
     # this should not be nested in input handling
     # moving the snake
     if change_to == 'UP':
         snake_position[1] -= 10
-    if change_to == 'DOWN':
+    elif change_to == 'DOWN':
         snake_position[1] += 10
-    if change_to == 'LEFT':
+    elif change_to == 'LEFT':
         snake_position[0] -= 10
-    if change_to == 'RIGHT':
+    elif change_to == 'RIGHT':
         snake_position[0] += 10  # not snake_body
     
     snake_body.insert(0, list(snake_position))  # list to avoid mutabilities issues
     # increasing the lenght of the snake as it eat
-    if snake_position[0] == food_position[0] and snake_position[1] == food_position[1]:
+    if snake_position == food_position:
         food_position = [random.randrange(1, 50) * 10, random.randrange(1, 50) * 10]
         score += 10
         snake_body.append((0, 0))
-    if snake_position[0] != food_position[0]:
+    
+    else :
         snake_body.pop()
 
     screen.fill((0, 0, 0))  # fill the screen with black before drawing, as if erasing previous drawing
     for pos in snake_body:
         pygame.draw.rect(screen, (0, 255, 0), Rect(pos[0], pos[1], 10, 10))
     
-    
+    show_score(1, (255, 255, 255))
     if check_collision():
         game_over()
 
